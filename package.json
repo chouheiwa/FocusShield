@@ -2,21 +2,22 @@
   "name": "focus-shield",
   "version": "1.0.0",
   "description": "Block intrusive focus/fullscreen detection for a calmer experience",
+  "type": "module",
   "scripts": {
-    "build": "webpack --mode production",
-    "dev": "webpack --mode development --watch"
+    "build": "tsc --noEmit && vite build",
+    "dev": "vite build --watch",
+    "type-check": "tsc --noEmit"
   },
   "dependencies": {
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
   },
   "devDependencies": {
-    "@babel/core": "^7.23.0",
-    "@babel/preset-react": "^7.22.0",
-    "babel-loader": "^9.1.3",
-    "css-loader": "^6.8.1",
-    "style-loader": "^3.3.3",
-    "webpack": "^5.89.0",
-    "webpack-cli": "^5.1.4"
+    "@types/chrome": "^0.0.268",
+    "@types/react": "^18.2.0",
+    "@types/react-dom": "^18.2.0",
+    "@vitejs/plugin-react": "^4.2.0",
+    "typescript": "^5.3.0",
+    "vite": "^5.0.0"
   }
 }

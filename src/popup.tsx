@@ -2,27 +2,26 @@ import React, { useState, useEffect } from 'react';
 import ReactDOM from 'react-dom/client';
 import './popup.css';
 
-const PopupPage = () => {
-  const [currentUrl, setCurrentUrl] = useState('');
-  const [hostname, setHostname] = useState('');
-  const [focusEnabled, setFocusEnabled] = useState(false);
-  const [fullscreenEnabled, setFullscreenEnabled] = useState(false);
-  const [message, setMessage] = useState('');
+type FeatureType = 'focus' | 'fullscreen';
+
+const PopupPage: React.FC = () => {
+  const [hostname, setHostname] = useState<string>('');
+  const [focusEnabled, setFocusEnabled] = useState<boolean>(false);
+  const [fullscreenEnabled, setFullscreenEnabled] = useState<boolean>(false);
+  const [message, setMessage] = useState<string>('');
 
   useEffect(() => {
     // 获取当前标签页的URL
     chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-      if (tabs[0]) {
+      if (tabs[0] && tabs[0].url) {
         const url = new URL(tabs[0].url);
-        setCurrentUrl(tabs[0].url);
         setHostname(url.hostname);
 
         // 检查当前网站是否已启用
         chrome.storage.sync.get(['focusBlockerSites', 'fullscreenBlockerSites'], (result) => {
-          const focusSites = result.focusBlockerSites || [];
-          const fullscreenSites = result.fullscreenBlockerSites || [];
+          const focusSites: string[] = result.focusBlockerSites || [];
+          const fullscreenSites: string[] = result.fullscreenBlockerSites || [];
 
-          const pattern = `*://*.${url.hostname}/*`;
           setFocusEnabled(focusSites.some(site => site.includes(url.hostname)));
           setFullscreenEnabled(fullscreenSites.some(site => site.includes(url.hostname)));
         });
@@ -30,15 +29,15 @@ const PopupPage = () => {
     });
   }, []);
 
-  const toggleFeature = (feature) => {
+  const toggleFeature = (feature: FeatureType): void => {
     chrome.storage.sync.get(['focusBlockerSites', 'fullscreenBlockerSites'], (result) => {
-      const focusSites = result.focusBlockerSites || [];
-      const fullscreenSites = result.fullscreenBlockerSites || [];
+      const focusSites: string[] = result.focusBlockerSites || [];
+      const fullscreenSites: string[] = result.fullscreenBlockerSites || [];
       const pattern = `*://*.${hostname}/*`;
 
       if (feature === 'focus') {
         const isEnabled = focusSites.some(site => site.includes(hostname));
-        let updated;
+        let updated: string[];
 
         if (isEnabled) {
           updated = focusSites.filter(site => !site.includes(hostname));
@@ -53,7 +52,7 @@ const PopupPage = () => {
         chrome.storage.sync.set({ focusBlockerSites: updated });
       } else {
         const isEnabled = fullscreenSites.some(site => site.includes(hostname));
-        let updated;
+        let updated: string[];
 
         if (isEnabled) {
           updated = fullscreenSites.filter(site => !site.includes(hostname));
@@ -73,12 +72,12 @@ const PopupPage = () => {
     });
   };
 
-  const showMessage = (msg) => {
+  const showMessage = (msg: string): void => {
     setMessage(msg);
     setTimeout(() => setMessage(''), 2000);
   };
 
-  const openOptions = () => {
+  const openOptions = (): void => {
     chrome.runtime.openOptionsPage();
   };
 
@@ -144,5 +143,8 @@ const PopupPage = () => {
   );
 };
 
-const root = ReactDOM.createRoot(document.getElementById('root'));
-root.render(<PopupPage />);
+const rootElement = document.getElementById('root');
+if (rootElement) {
+  const root = ReactDOM.createRoot(rootElement);
+  root.render(<PopupPage />);
+}

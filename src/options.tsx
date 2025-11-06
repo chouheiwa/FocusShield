@@ -2,11 +2,13 @@ import React, { useState, useEffect } from 'react';
 import ReactDOM from 'react-dom/client';
 import './options.css';
 
-const OptionsPage = () => {
-  const [focusBlockerSites, setFocusBlockerSites] = useState([]);
-  const [fullscreenBlockerSites, setFullscreenBlockerSites] = useState([]);
-  const [newSite, setNewSite] = useState('');
-  const [activeTab, setActiveTab] = useState('focus');
+type TabType = 'focus' | 'fullscreen';
+
+const OptionsPage: React.FC = () => {
+  const [focusBlockerSites, setFocusBlockerSites] = useState<string[]>([]);
+  const [fullscreenBlockerSites, setFullscreenBlockerSites] = useState<string[]>([]);
+  const [newSite, setNewSite] = useState<string>('');
+  const [activeTab, setActiveTab] = useState<TabType>('focus');
 
   useEffect(() => {
     // 加载已保存的配置
@@ -16,7 +18,7 @@ const OptionsPage = () => {
     });
   }, []);
 
-  const saveSites = (focus, fullscreen) => {
+  const saveSites = (focus: string[], fullscreen: string[]): void => {
     chrome.storage.sync.set({
       focusBlockerSites: focus,
       fullscreenBlockerSites: fullscreen
@@ -25,7 +27,7 @@ const OptionsPage = () => {
     });
   };
 
-  const addSite = () => {
+  const addSite = (): void => {
     if (!newSite.trim()) return;
 
     // 简单的URL格式化
@@ -47,7 +49,7 @@ const OptionsPage = () => {
     setNewSite('');
   };
 
-  const removeSite = (index, type) => {
+  const removeSite = (index: number, type: TabType): void => {
     if (type === 'focus') {
       const updated = focusBlockerSites.filter((_, i) => i !== index);
       setFocusBlockerSites(updated);
@@ -56,6 +58,12 @@ const OptionsPage = () => {
       const updated = fullscreenBlockerSites.filter((_, i) => i !== index);
       setFullscreenBlockerSites(updated);
       saveSites(focusBlockerSites, updated);
+    }
+  };
+
+  const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>): void => {
+    if (e.key === 'Enter') {
+      addSite();
     }
   };
 
@@ -91,7 +99,7 @@ const OptionsPage = () => {
             placeholder="输入网址（例如: example.com 或 https://example.com/*）"
             value={newSite}
             onChange={(e) => setNewSite(e.target.value)}
-            onKeyPress={(e) => e.key === 'Enter' && addSite()}
+            onKeyPress={handleKeyPress}
           />
           <button className="btn btn-primary" onClick={addSite}>
             添加网站
@@ -140,5 +148,8 @@ const OptionsPage = () => {
   );
 };
 
-const root = ReactDOM.createRoot(document.getElementById('root'));
-root.render(<OptionsPage />);
+const rootElement = document.getElementById('root');
+if (rootElement) {
+  const root = ReactDOM.createRoot(rootElement);
+  root.render(<OptionsPage />);
+}

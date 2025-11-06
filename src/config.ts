@@ -1,8 +1,9 @@
 // 配置管理工具类
+import type { Config, IConfigManager } from './types';
 
-export const ConfigManager = {
+export const ConfigManager: IConfigManager = {
   // 获取所有配置
-  async getConfig() {
+  async getConfig(): Promise<Config> {
     return new Promise((resolve) => {
       chrome.storage.sync.get(['focusBlockerSites', 'fullscreenBlockerSites'], (result) => {
         resolve({
@@ -14,7 +15,7 @@ export const ConfigManager = {
   },
 
   // 保存配置
-  async saveConfig(config) {
+  async saveConfig(config: Config): Promise<void> {
     return new Promise((resolve) => {
       chrome.storage.sync.set(config, () => {
         resolve();
@@ -23,7 +24,7 @@ export const ConfigManager = {
   },
 
   // 检查URL是否匹配配置的模式
-  matchesPattern(url, patterns) {
+  matchesPattern(url: string, patterns: string[]): boolean {
     try {
       const urlObj = new URL(url);
       const hostname = urlObj.hostname;
@@ -44,13 +45,13 @@ export const ConfigManager = {
   },
 
   // 检查是否应该在当前URL启用焦点拦截器
-  async shouldEnableFocusBlocker(url) {
+  async shouldEnableFocusBlocker(url: string): Promise<boolean> {
     const config = await this.getConfig();
     return this.matchesPattern(url, config.focusBlockerSites);
   },
 
   // 检查是否应该在当前URL启用全屏拦截器
-  async shouldEnableFullscreenBlocker(url) {
+  async shouldEnableFullscreenBlocker(url: string): Promise<boolean> {
     const config = await this.getConfig();
     return this.matchesPattern(url, config.fullscreenBlockerSites);
   }

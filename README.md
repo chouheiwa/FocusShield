@@ -72,17 +72,19 @@ FocusShield/
 ├── common/                    # 拦截器脚本
 │   ├── focus-detection-blocker.js      # 焦点检测拦截器
 │   └── forbid-fullscreen-dection.js    # 全屏检测拦截器
-├── src/                       # React源代码
-│   ├── options.jsx            # 配置中心页面
+├── src/                       # React + TypeScript 源代码
+│   ├── options.tsx            # 配置中心页面
 │   ├── options.css            # 配置中心样式
-│   ├── popup.jsx              # 弹出框页面
+│   ├── popup.tsx              # 弹出框页面
 │   ├── popup.css              # 弹出框样式
-│   └── config.js              # 配置管理工具
-├── options.html               # 配置中心HTML
-├── popup.html                 # 弹出框HTML
+│   ├── config.ts              # 配置管理工具
+│   └── types.ts               # TypeScript 类型定义
+├── options.html               # 配置中心HTML（源文件）
+├── popup.html                 # 弹出框HTML（源文件）
 ├── dist/                      # 构建输出目录
 ├── package.json               # NPM配置
-└── webpack.config.js          # Webpack配置
+├── tsconfig.json              # TypeScript 配置
+└── vite.config.ts             # Vite 配置
 ```
 
 ### 开发模式
@@ -96,7 +98,8 @@ npm run dev
 ### 技术栈
 
 - React 18
-- Webpack 5
+- TypeScript 5
+- Vite 5
 - Chrome Extension Manifest V3
 - Chrome Storage API
 - Chrome Scripting API
