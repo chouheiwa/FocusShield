@@ -1,0 +1,24 @@
+{
+  "name": "focus-shield",
+  "version": "1.0.0",
+  "description": "Block intrusive focus/fullscreen detection for a calmer experience",
+  "type": "module",
+  "scripts": {
+    "build": "tsc --noEmit && vite build",
+    "dev": "vite build --watch",
+    "type-check": "tsc --noEmit",
+    "zip": "npm run build && zip -r extension.zip manifest.json background.js common doselect icons dist"
+  },
+  "dependencies": {
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  },
+  "devDependencies": {
+    "@types/chrome": "^0.0.268",
+    "@types/react": "^18.2.0",
+    "@types/react-dom": "^18.2.0",
+    "@vitejs/plugin-react": "^4.2.0",
+    "typescript": "^5.3.0",
+    "vite": "^5.0.0"
+  }
+}
